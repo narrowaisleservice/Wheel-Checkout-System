@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Wheel Assembly Checkout</title>
+    <title>Wheel Assembly System</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --flexi-red: #FF0A16;
             --flexi-red-light: #FF3D47;
             --flexi-red-glow: rgba(255, 10, 22, 0.5);
+            --flexi-green: #28a745;
+            --flexi-blue: #007bff;
             --dark-bg: #0A0A0A;
             --dark-card: #1A1A1A;
             --dark-text: #E0E0E0;
@@ -56,6 +58,62 @@
             color: white;
             opacity: 0.9;
             font-size: 1.2em;
+        }
+
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .nav-btn {
+            background: var(--dark-card);
+            color: white;
+            border: 2px solid rgba(255, 10, 22, 0.4);
+            padding: 30px 20px;
+            font-size: 1.3em;
+            font-weight: 700;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 45px var(--flexi-red-glow);
+            border-color: var(--flexi-red-light);
+        }
+
+        .nav-btn.book-out {
+            border-color: rgba(255, 10, 22, 0.6);
+        }
+
+        .nav-btn.book-in {
+            border-color: rgba(40, 167, 69, 0.6);
+        }
+
+        .nav-btn.adjust {
+            border-color: rgba(0, 123, 255, 0.6);
+            grid-column: 1 / -1;
+        }
+
+        .icon {
+            font-size: 3em;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
         }
 
         .form-card {
@@ -126,6 +184,42 @@
         .btn-large:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 45px var(--flexi-red-glow);
+        }
+
+        .btn-large.book-in {
+            background: linear-gradient(135deg, var(--flexi-green) 0%, #1e7e34 100%);
+            box-shadow: 0 10px 35px rgba(40, 167, 69, 0.5);
+        }
+
+        .btn-large.book-in:hover {
+            box-shadow: 0 15px 45px rgba(40, 167, 69, 0.7);
+        }
+
+        .btn-large.adjust {
+            background: linear-gradient(135deg, var(--flexi-blue) 0%, #0056b3 100%);
+            box-shadow: 0 10px 35px rgba(0, 123, 255, 0.5);
+        }
+
+        .btn-large.adjust:hover {
+            box-shadow: 0 15px 45px rgba(0, 123, 255, 0.7);
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         .success-message {
@@ -226,107 +320,310 @@
     <div class="toast" id="toast"></div>
 
     <div class="container">
-        <div class="header">
-            <h1>🔧 Wheel Assembly Checkout</h1>
-            <p class="subtitle">Narrow Aisle - Wheel Warehouse</p>
+        <!-- NAVIGATION PAGE -->
+        <div id="navPage" class="page active">
+            <div class="header">
+                <h1>🔧 Wheel Assembly System</h1>
+                <p class="subtitle">Narrow Aisle - Wheel Warehouse</p>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="nav-btn book-out" onclick="showPage('bookOutPage')">
+                    <span class="icon">📤</span>
+                    <span>Book Out<br>Wheels</span>
+                </button>
+
+                <button class="nav-btn book-in" onclick="showPage('bookInPage')">
+                    <span class="icon">📥</span>
+                    <span>Book In<br>Wheels</span>
+                </button>
+
+                <button class="nav-btn adjust" onclick="showPage('adjustPage')">
+                    <span class="icon">⚙️</span>
+                    <span>Adjust Stock Levels</span>
+                </button>
+            </div>
         </div>
 
-        <div class="form-card">
-            <form id="wheelForm">
-                <div class="form-group">
-                    <label>Your Name <span class="required">*</span></label>
-                    <select id="workerName" required>
-                        <option value="">-- Select Your Name --</option>
-						<option value="Worker 1">Arunas Sakazauskas</option>
-                        <option value="Worker 2">Ade Regan</option>
-						<option value="Worker 3">Pete Oliver</option>
-                        <option value="Worker 4">Connor Fellows</option>
-                        <option value="Worker 5">Danny Nicholls</option>
-						<option value="Worker 6">Mark Causer</option>
-						<option value="Worker 7">Michael Causer</option>
-						<option value="Worker 8">Lee Pickup</option>
-						<option value="Worker 9">Jack Tilt</option>
-						<option value="Worker 10">Steven Dean</option>
-						<option value="Worker 11">Steve Parker</option>
-						<option value="Worker 12">Pete Oliver</option>
-						<option value="Worker 13">Ryan Gilbert</option>
-						<option value="Worker 14">Richard Hall</option>
-						<option value="Worker 15">Krzysztof Luteckl</option>
-                    </select>
+        <!-- BOOK OUT PAGE -->
+        <div id="bookOutPage" class="page">
+            <button class="btn-back" onclick="showPage('navPage')">← Back to Menu</button>
+            
+            <div class="header">
+                <h1>📤 Book Out Wheels</h1>
+                <p class="subtitle">Taking wheels from warehouse</p>
+            </div>
+
+            <div class="form-card">
+                <form id="bookOutForm">
+                    <div class="form-group">
+                        <label>Your Name <span class="required">*</span></label>
+                        <select id="bookOutWorkerName" required>
+                            <option value="">-- Select Your Name --</option>
+                            <option value="Worker 1">Worker 1 (TEMPORARY - ADD NAMES)</option>
+                            <option value="Worker 2">Worker 2 (TEMPORARY - ADD NAMES)</option>
+                            <option value="Worker 3">Worker 3 (TEMPORARY - ADD NAMES)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Wheel Type <span class="required">*</span></label>
+                        <select id="bookOutWheelType" required>
+                            <option value="">-- Select Wheel Type --</option>
+                            
+                            <option disabled class="wheel-category">─── BLACK TREADED FRONT ───</option>
+                            <option value="5 inch Black Treaded Front - 7661.21.000">5" Black Treaded Front - 7661.21.000</option>
+                            <option value="6 inch Black Treaded Front - 7661.17.000">6" Black Treaded Front - 7661.17.000</option>
+                            <option value="7 inch Black Treaded Front - 7661.10.000">7" Black Treaded Front - 7661.10.000</option>
+                            
+                            <option disabled class="wheel-category">─── BLACK TREADED REAR ───</option>
+                            <option value="6 inch Black Treaded Rear - LK0024-00">6" Black Treaded Rear - LK0024-00</option>
+                            <option value="7 inch Black Treaded Rear - LK0024-01">7" Black Treaded Rear - LK0024-01</option>
+                            <option value="8 inch Black Treaded Rear - LK0024-02">8" Black Treaded Rear - LK0024-02</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING TREADED FRONT ───</option>
+                            <option value="5 inch White Non-Marking Treaded Front - 7661.34.000">5" White Non-Marking Treaded Front - 7661.34.000</option>
+                            <option value="6 inch White Non-Marking Treaded Front - 7661.29.000">6" White Non-Marking Treaded Front - 7661.29.000</option>
+                            <option value="7 inch White Non-Marking Treaded Front - 7661.12.000">7" White Non-Marking Treaded Front - 7661.12.000</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING TREADED REAR ───</option>
+                            <option value="6 inch White Non-Marking Treaded Rear - LK0024-03">6" White Non-Marking Treaded Rear - LK0024-03</option>
+                            <option value="7 inch White Non-Marking Treaded Rear - LK0024-04">7" White Non-Marking Treaded Rear - LK0024-04</option>
+                            <option value="8 inch White Non-Marking Treaded Rear - LK0024-05">8" White Non-Marking Treaded Rear - LK0024-05</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING PLAIN FRONT ───</option>
+                            <option value="5 inch White Non-Marking Plain Front - 7661.23.000">5" White Non-Marking Plain Front - 7661.23.000</option>
+                            <option value="6 inch White Non-Marking Plain Front - 7661.19.000">6" White Non-Marking Plain Front - 7661.19.000</option>
+                            <option value="7 inch White Non-Marking Plain Front - 7661.14.000">7" White Non-Marking Plain Front - 7661.14.000</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING PLAIN REAR ───</option>
+                            <option value="6 inch White Non-Marking Plain Rear - LK0024-09">6" White Non-Marking Plain Rear - LK0024-09</option>
+                            <option value="7 inch White Non-Marking Plain Rear - LK0024-10">7" White Non-Marking Plain Rear - LK0024-10</option>
+                            <option value="8 inch White Non-Marking Plain Rear - LK0024-11">8" White Non-Marking Plain Rear - LK0024-11</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity <span class="required">*</span></label>
+                        <input type="number" id="bookOutQuantity" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Truck Serial Number <span class="required">*</span></label>
+                        <input type="text" id="bookOutTruckSerial" required style="text-transform: uppercase;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Work Order Number <span style="opacity: 0.7;">(Optional)</span></label>
+                        <input type="text" id="bookOutWorkOrder">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes/Reason <span style="opacity: 0.7;">(Optional)</span></label>
+                        <input type="text" id="bookOutNotes" placeholder="e.g., Repair, Service, New Build">
+                    </div>
+
+                    <button type="submit" class="btn-large">📤 Book Out Wheels</button>
+                </form>
+
+                <div class="success-message" id="bookOutSuccess">
+                    <div style="font-size: 5em; margin-bottom: 20px;">✅</div>
+                    <h2 style="color: #28a745; font-size: 2em; margin-bottom: 15px;">Booked Out Successfully!</h2>
+                    <p style="font-size: 1.3em; color: white; margin-bottom: 10px;">
+                        <span id="bookOutSuccessQty"></span> x <span id="bookOutSuccessWheel"></span>
+                    </p>
+                    <p style="font-size: 1.1em; color: white; opacity: 0.8;">
+                        Truck: <span id="bookOutSuccessTruck"></span>
+                    </p>
                 </div>
+            </div>
+        </div>
 
-                <div class="form-group">
-                    <label>Wheel Type <span class="required">*</span></label>
-                    <select id="wheelType" required>
-                        <option value="">-- Select Wheel Type --</option>
-                        
-                        <option disabled class="wheel-category">─── BLACK TREADED FRONT ───</option>
-                        <option value="5 inch Black Treaded Front - 7661.21.000">5" Black Treaded Front - 7661.21.000</option>
-                        <option value="6 inch Black Treaded Front - 7661.17.000">6" Black Treaded Front - 7661.17.000</option>
-                        <option value="7 inch Black Treaded Front - 7661.10.000">7" Black Treaded Front - 7661.10.000</option>
-                        
-                        <option disabled class="wheel-category">─── BLACK TREADED REAR ───</option>
-                        <option value="6 inch Black Treaded Rear - LK0024-00">6" Black Treaded Rear - LK0024-00</option>
-                        <option value="7 inch Black Treaded Rear - LK0024-01">7" Black Treaded Rear - LK0024-01</option>
-                        <option value="8 inch Black Treaded Rear - LK0024-02">8" Black Treaded Rear - LK0024-02</option>
-                        
-                        <option disabled class="wheel-category">─── WHITE NON-MARKING TREADED FRONT ───</option>
-                        <option value="5 inch White Non-Marking Treaded Front - 7661.34.000">5" White Non-Marking Treaded Front - 7661.34.000</option>
-                        <option value="6 inch White Non-Marking Treaded Front - 7661.29.000">6" White Non-Marking Treaded Front - 7661.29.000</option>
-                        <option value="7 inch White Non-Marking Treaded Front - 7661.12.000">7" White Non-Marking Treaded Front - 7661.12.000</option>
-                        
-                        <option disabled class="wheel-category">─── WHITE NON-MARKING TREADED REAR ───</option>
-                        <option value="6 inch White Non-Marking Treaded Rear - LK0024-03">6" White Non-Marking Treaded Rear - LK0024-03</option>
-                        <option value="7 inch White Non-Marking Treaded Rear - LK0024-04">7" White Non-Marking Treaded Rear - LK0024-04</option>
-                        <option value="8 inch White Non-Marking Treaded Rear - LK0024-05">8" White Non-Marking Treaded Rear - LK0024-05</option>
-                        
-                        <option disabled class="wheel-category">─── WHITE NON-MARKING PLAIN FRONT ───</option>
-                        <option value="5 inch White Non-Marking Plain Front - 7661.23.000">5" White Non-Marking Plain Front - 7661.23.000</option>
-                        <option value="6 inch White Non-Marking Plain Front - 7661.19.000">6" White Non-Marking Plain Front - 7661.19.000</option>
-                        <option value="7 inch White Non-Marking Plain Front - 7661.14.000">7" White Non-Marking Plain Front - 7661.14.000</option>
-                        
-                        <option disabled class="wheel-category">─── WHITE NON-MARKING PLAIN REAR ───</option>
-                        <option value="6 inch White Non-Marking Plain Rear - LK0024-09">6" White Non-Marking Plain Rear - LK0024-09</option>
-                        <option value="7 inch White Non-Marking Plain Rear - LK0024-10">7" White Non-Marking Plain Rear - LK0024-10</option>
-                        <option value="8 inch White Non-Marking Plain Rear - LK0024-11">8" White Non-Marking Plain Rear - LK0024-11</option>
-                    </select>
+        <!-- BOOK IN PAGE -->
+        <div id="bookInPage" class="page">
+            <button class="btn-back" onclick="showPage('navPage')">← Back to Menu</button>
+            
+            <div class="header">
+                <h1>📥 Book In Wheels</h1>
+                <p class="subtitle">Returning wheels to warehouse</p>
+            </div>
+
+            <div class="form-card">
+                <form id="bookInForm">
+                    <div class="form-group">
+                        <label>Your Name <span class="required">*</span></label>
+                        <select id="bookInWorkerName" required>
+                            <option value="">-- Select Your Name --</option>
+                            <option value="Worker 1">Worker 1 (TEMPORARY - ADD NAMES)</option>
+                            <option value="Worker 2">Worker 2 (TEMPORARY - ADD NAMES)</option>
+                            <option value="Worker 3">Worker 3 (TEMPORARY - ADD NAMES)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Wheel Type <span class="required">*</span></label>
+                        <select id="bookInWheelType" required>
+                            <option value="">-- Select Wheel Type --</option>
+                            
+                            <option disabled class="wheel-category">─── BLACK TREADED FRONT ───</option>
+                            <option value="5 inch Black Treaded Front - 7661.21.000">5" Black Treaded Front - 7661.21.000</option>
+                            <option value="6 inch Black Treaded Front - 7661.17.000">6" Black Treaded Front - 7661.17.000</option>
+                            <option value="7 inch Black Treaded Front - 7661.10.000">7" Black Treaded Front - 7661.10.000</option>
+                            
+                            <option disabled class="wheel-category">─── BLACK TREADED REAR ───</option>
+                            <option value="6 inch Black Treaded Rear - LK0024-00">6" Black Treaded Rear - LK0024-00</option>
+                            <option value="7 inch Black Treaded Rear - LK0024-01">7" Black Treaded Rear - LK0024-01</option>
+                            <option value="8 inch Black Treaded Rear - LK0024-02">8" Black Treaded Rear - LK0024-02</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING TREADED FRONT ───</option>
+                            <option value="5 inch White Non-Marking Treaded Front - 7661.34.000">5" White Non-Marking Treaded Front - 7661.34.000</option>
+                            <option value="6 inch White Non-Marking Treaded Front - 7661.29.000">6" White Non-Marking Treaded Front - 7661.29.000</option>
+                            <option value="7 inch White Non-Marking Treaded Front - 7661.12.000">7" White Non-Marking Treaded Front - 7661.12.000</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING TREADED REAR ───</option>
+                            <option value="6 inch White Non-Marking Treaded Rear - LK0024-03">6" White Non-Marking Treaded Rear - LK0024-03</option>
+                            <option value="7 inch White Non-Marking Treaded Rear - LK0024-04">7" White Non-Marking Treaded Rear - LK0024-04</option>
+                            <option value="8 inch White Non-Marking Treaded Rear - LK0024-05">8" White Non-Marking Treaded Rear - LK0024-05</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING PLAIN FRONT ───</option>
+                            <option value="5 inch White Non-Marking Plain Front - 7661.23.000">5" White Non-Marking Plain Front - 7661.23.000</option>
+                            <option value="6 inch White Non-Marking Plain Front - 7661.19.000">6" White Non-Marking Plain Front - 7661.19.000</option>
+                            <option value="7 inch White Non-Marking Plain Front - 7661.14.000">7" White Non-Marking Plain Front - 7661.14.000</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING PLAIN REAR ───</option>
+                            <option value="6 inch White Non-Marking Plain Rear - LK0024-09">6" White Non-Marking Plain Rear - LK0024-09</option>
+                            <option value="7 inch White Non-Marking Plain Rear - LK0024-10">7" White Non-Marking Plain Rear - LK0024-10</option>
+                            <option value="8 inch White Non-Marking Plain Rear - LK0024-11">8" White Non-Marking Plain Rear - LK0024-11</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity <span class="required">*</span></label>
+                        <input type="number" id="bookInQuantity" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Source <span class="required">*</span></label>
+                        <select id="bookInSource" required>
+                            <option value="">-- Select Source --</option>
+                            <option value="Used Truck Sale">Used Truck Sale</option>
+                            <option value="Rental Return">Rental Return</option>
+                            <option value="Repair Return">Repair Return</option>
+                            <option value="Supplier Delivery">Supplier Delivery</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reference <span style="opacity: 0.7;">(Optional)</span></label>
+                        <input type="text" id="bookInReference" placeholder="e.g., Truck serial, Invoice number">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes <span style="opacity: 0.7;">(Optional)</span></label>
+                        <input type="text" id="bookInNotes" placeholder="e.g., Condition, location">
+                    </div>
+
+                    <button type="submit" class="btn-large book-in">📥 Book In Wheels</button>
+                </form>
+
+                <div class="success-message" id="bookInSuccess">
+                    <div style="font-size: 5em; margin-bottom: 20px;">✅</div>
+                    <h2 style="color: #28a745; font-size: 2em; margin-bottom: 15px;">Booked In Successfully!</h2>
+                    <p style="font-size: 1.3em; color: white; margin-bottom: 10px;">
+                        <span id="bookInSuccessQty"></span> x <span id="bookInSuccessWheel"></span>
+                    </p>
+                    <p style="font-size: 1.1em; color: white; opacity: 0.8;">
+                        Source: <span id="bookInSuccessSource"></span>
+                    </p>
                 </div>
+            </div>
+        </div>
 
-                <div class="form-group">
-                    <label>Quantity <span class="required">*</span></label>
-                    <input type="number" id="quantity" min="1" required>
+        <!-- ADJUST STOCK PAGE -->
+        <div id="adjustPage" class="page">
+            <button class="btn-back" onclick="showPage('navPage')">← Back to Menu</button>
+            
+            <div class="header">
+                <h1>⚙️ Adjust Stock Levels</h1>
+                <p class="subtitle">Manual stock adjustment</p>
+            </div>
+
+            <div class="form-card">
+                <form id="adjustForm">
+                    <div class="form-group">
+                        <label>Wheel Type <span class="required">*</span></label>
+                        <select id="adjustWheelType" required>
+                            <option value="">-- Select Wheel Type --</option>
+                            
+                            <option disabled class="wheel-category">─── BLACK TREADED FRONT ───</option>
+                            <option value="5 inch Black Treaded Front - 7661.21.000">5" Black Treaded Front - 7661.21.000</option>
+                            <option value="6 inch Black Treaded Front - 7661.17.000">6" Black Treaded Front - 7661.17.000</option>
+                            <option value="7 inch Black Treaded Front - 7661.10.000">7" Black Treaded Front - 7661.10.000</option>
+                            
+                            <option disabled class="wheel-category">─── BLACK TREADED REAR ───</option>
+                            <option value="6 inch Black Treaded Rear - LK0024-00">6" Black Treaded Rear - LK0024-00</option>
+                            <option value="7 inch Black Treaded Rear - LK0024-01">7" Black Treaded Rear - LK0024-01</option>
+                            <option value="8 inch Black Treaded Rear - LK0024-02">8" Black Treaded Rear - LK0024-02</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING TREADED FRONT ───</option>
+                            <option value="5 inch White Non-Marking Treaded Front - 7661.34.000">5" White Non-Marking Treaded Front - 7661.34.000</option>
+                            <option value="6 inch White Non-Marking Treaded Front - 7661.29.000">6" White Non-Marking Treaded Front - 7661.29.000</option>
+                            <option value="7 inch White Non-Marking Treaded Front - 7661.12.000">7" White Non-Marking Treaded Front - 7661.12.000</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING TREADED REAR ───</option>
+                            <option value="6 inch White Non-Marking Treaded Rear - LK0024-03">6" White Non-Marking Treaded Rear - LK0024-03</option>
+                            <option value="7 inch White Non-Marking Treaded Rear - LK0024-04">7" White Non-Marking Treaded Rear - LK0024-04</option>
+                            <option value="8 inch White Non-Marking Treaded Rear - LK0024-05">8" White Non-Marking Treaded Rear - LK0024-05</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING PLAIN FRONT ───</option>
+                            <option value="5 inch White Non-Marking Plain Front - 7661.23.000">5" White Non-Marking Plain Front - 7661.23.000</option>
+                            <option value="6 inch White Non-Marking Plain Front - 7661.19.000">6" White Non-Marking Plain Front - 7661.19.000</option>
+                            <option value="7 inch White Non-Marking Plain Front - 7661.14.000">7" White Non-Marking Plain Front - 7661.14.000</option>
+                            
+                            <option disabled class="wheel-category">─── WHITE NON-MARKING PLAIN REAR ───</option>
+                            <option value="6 inch White Non-Marking Plain Rear - LK0024-09">6" White Non-Marking Plain Rear - LK0024-09</option>
+                            <option value="7 inch White Non-Marking Plain Rear - LK0024-10">7" White Non-Marking Plain Rear - LK0024-10</option>
+                            <option value="8 inch White Non-Marking Plain Rear - LK0024-11">8" White Non-Marking Plain Rear - LK0024-11</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>New Stock Level <span class="required">*</span></label>
+                        <input type="number" id="adjustQuantity" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reason <span class="required">*</span></label>
+                        <select id="adjustReason" required>
+                            <option value="">-- Select Reason --</option>
+                            <option value="Physical Count">Physical Count / Stocktake</option>
+                            <option value="Supplier Delivery">Supplier Delivery Received</option>
+                            <option value="Damaged Stock">Damaged Stock Write-off</option>
+                            <option value="Found Stock">Found Missing Stock</option>
+                            <option value="Correction">System Correction</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes <span style="opacity: 0.7;">(Optional)</span></label>
+                        <input type="text" id="adjustNotes" placeholder="Additional details">
+                    </div>
+
+                    <button type="submit" class="btn-large adjust">⚙️ Update Stock Level</button>
+                </form>
+
+                <div class="success-message" id="adjustSuccess">
+                    <div style="font-size: 5em; margin-bottom: 20px;">✅</div>
+                    <h2 style="color: #28a745; font-size: 2em; margin-bottom: 15px;">Stock Updated!</h2>
+                    <p style="font-size: 1.3em; color: white; margin-bottom: 10px;">
+                        <span id="adjustSuccessWheel"></span>
+                    </p>
+                    <p style="font-size: 1.5em; color: white; opacity: 0.8;">
+                        New Stock: <span id="adjustSuccessQty" style="color: #007bff; font-weight: bold;"></span>
+                    </p>
                 </div>
-
-                <div class="form-group">
-                    <label>Truck Serial Number <span class="required">*</span></label>
-                    <input type="text" id="truckSerial" required style="text-transform: uppercase;">
-                </div>
-
-                <div class="form-group">
-                    <label>Work Order Number <span style="opacity: 0.7;">(Optional)</span></label>
-                    <input type="text" id="workOrder">
-                </div>
-
-                <div class="form-group">
-                    <label>Notes/Reason <span style="opacity: 0.7;">(Optional)</span></label>
-                    <input type="text" id="notes" placeholder="e.g., Repair, Service, New Build">
-                </div>
-
-                <button type="submit" class="btn-large">✅ Checkout Wheels</button>
-            </form>
-
-            <div class="success-message" id="successMessage">
-                <div style="font-size: 5em; margin-bottom: 20px;">✅</div>
-                <h2 style="color: #28a745; font-size: 2em; margin-bottom: 15px;">Checkout Successful!</h2>
-                <p style="font-size: 1.3em; color: white; margin-bottom: 10px;">
-                    <span id="successQuantity"></span> x <span id="successWheel"></span>
-                </p>
-                <p style="font-size: 1.1em; color: white; opacity: 0.8;">
-                    Truck: <span id="successTruck"></span>
-                </p>
-                <p style="font-size: 0.9em; color: white; opacity: 0.6; margin-top: 15px;">
-                    Email sent to stores ✉️
-                </p>
             </div>
         </div>
     </div>
@@ -349,27 +646,31 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        document.getElementById('wheelForm').addEventListener('submit', async function(e) {
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // BOOK OUT FORM
+        document.getElementById('bookOutForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             showLoading();
             
-            const wheelType = document.getElementById('wheelType').value;
-            const quantity = document.getElementById('quantity').value;
-            const truckSerial = document.getElementById('truckSerial').value.toUpperCase();
+            const wheelType = document.getElementById('bookOutWheelType').value;
+            const quantity = document.getElementById('bookOutQuantity').value;
+            const truckSerial = document.getElementById('bookOutTruckSerial').value.toUpperCase();
             
             const data = {
-                action: 'checkout',
+                action: 'bookout',
                 timestamp: new Date().toISOString(),
                 date: new Date().toLocaleDateString('en-GB'),
                 time: new Date().toLocaleTimeString('en-GB'),
-                workerName: document.getElementById('workerName').value,
+                workerName: document.getElementById('bookOutWorkerName').value,
                 wheelType: wheelType,
                 quantity: quantity,
                 truckSerial: truckSerial,
-                workOrder: document.getElementById('workOrder').value,
-                notes: document.getElementById('notes').value,
-                email: 'J.Williams@narrowaisle.co.uk'
+                workOrder: document.getElementById('bookOutWorkOrder').value,
+                notes: document.getElementById('bookOutNotes').value
             };
             
             try {
@@ -381,22 +682,120 @@
                 });
                 
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                
                 hideLoading();
                 
-                // Show success message
-                document.getElementById('successQuantity').textContent = quantity;
-                document.getElementById('successWheel').textContent = wheelType.split(' - ')[0];
-                document.getElementById('successTruck').textContent = truckSerial;
-                document.getElementById('successMessage').classList.add('show');
+                document.getElementById('bookOutSuccessQty').textContent = quantity;
+                document.getElementById('bookOutSuccessWheel').textContent = wheelType.split(' - ')[0];
+                document.getElementById('bookOutSuccessTruck').textContent = truckSerial;
+                document.getElementById('bookOutSuccess').classList.add('show');
                 
-                showToast('✅ Checkout successful!');
+                showToast('✅ Booked out successfully!');
                 
-                // Reset form after 5 seconds
                 setTimeout(() => {
-                    document.getElementById('wheelForm').reset();
-                    document.getElementById('successMessage').classList.remove('show');
-                }, 5000);
+                    document.getElementById('bookOutForm').reset();
+                    document.getElementById('bookOutSuccess').classList.remove('show');
+                    showPage('navPage');
+                }, 3000);
+                
+            } catch (error) {
+                hideLoading();
+                showToast('❌ Error - please try again');
+            }
+        });
+
+        // BOOK IN FORM
+        document.getElementById('bookInForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            showLoading();
+            
+            const wheelType = document.getElementById('bookInWheelType').value;
+            const quantity = document.getElementById('bookInQuantity').value;
+            const source = document.getElementById('bookInSource').value;
+            
+            const data = {
+                action: 'bookin',
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleDateString('en-GB'),
+                time: new Date().toLocaleTimeString('en-GB'),
+                workerName: document.getElementById('bookInWorkerName').value,
+                wheelType: wheelType,
+                quantity: quantity,
+                source: source,
+                reference: document.getElementById('bookInReference').value,
+                notes: document.getElementById('bookInNotes').value
+            };
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                hideLoading();
+                
+                document.getElementById('bookInSuccessQty').textContent = quantity;
+                document.getElementById('bookInSuccessWheel').textContent = wheelType.split(' - ')[0];
+                document.getElementById('bookInSuccessSource').textContent = source;
+                document.getElementById('bookInSuccess').classList.add('show');
+                
+                showToast('✅ Booked in successfully!');
+                
+                setTimeout(() => {
+                    document.getElementById('bookInForm').reset();
+                    document.getElementById('bookInSuccess').classList.remove('show');
+                    showPage('navPage');
+                }, 3000);
+                
+            } catch (error) {
+                hideLoading();
+                showToast('❌ Error - please try again');
+            }
+        });
+
+        // ADJUST STOCK FORM
+        document.getElementById('adjustForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            showLoading();
+            
+            const wheelType = document.getElementById('adjustWheelType').value;
+            const quantity = document.getElementById('adjustQuantity').value;
+            
+            const data = {
+                action: 'adjust',
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleDateString('en-GB'),
+                time: new Date().toLocaleTimeString('en-GB'),
+                wheelType: wheelType,
+                quantity: quantity,
+                reason: document.getElementById('adjustReason').value,
+                notes: document.getElementById('adjustNotes').value
+            };
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                hideLoading();
+                
+                document.getElementById('adjustSuccessWheel').textContent = wheelType.split(' - ')[0];
+                document.getElementById('adjustSuccessQty').textContent = quantity;
+                document.getElementById('adjustSuccess').classList.add('show');
+                
+                showToast('✅ Stock level updated!');
+                
+                setTimeout(() => {
+                    document.getElementById('adjustForm').reset();
+                    document.getElementById('adjustSuccess').classList.remove('show');
+                    showPage('navPage');
+                }, 3000);
                 
             } catch (error) {
                 hideLoading();
