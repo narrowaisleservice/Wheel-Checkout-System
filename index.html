@@ -309,6 +309,32 @@
             transform: translateX(0);
         }
 
+        /* DATE AND TIME DISPLAY */
+        .datetime-display {
+            background: var(--dark-card);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 10, 22, 0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .datetime-time {
+            color: var(--flexi-red-light);
+            font-size: 3em;
+            font-weight: 700;
+            text-shadow: 0 0 20px var(--flexi-red-glow);
+            margin-bottom: 5px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .datetime-date {
+            color: white;
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
         /* STOCK DISPLAY STYLES */
         .stock-display {
             background: var(--dark-card);
@@ -488,6 +514,12 @@
             <div class="header">
                 <h1>Shop Floor Wheel Assy System</h1>
                 <p class="subtitle">Narrow Aisle LTD - Wheel Warehouse</p>
+            </div>
+
+            <!-- DATE AND TIME DISPLAY -->
+            <div class="datetime-display">
+                <div class="datetime-time" id="currentTime">00:00:00</div>
+                <div class="datetime-date" id="currentDate">Loading...</div>
             </div>
 
             <div class="nav-buttons">
@@ -840,7 +872,7 @@
 
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzoP1_khbyTH8WQ3g4wl7N2Nk0AJG2gWO-Kqha904Nzkph48jpOujmb7DCv3OPBZUlR/exec';
-        const SUPERVISOR_PASSWORD = 'Alex'; // Change this to your desired password
+        const SUPERVISOR_PASSWORD = 'wheels2025'; // Change this to your desired password
 
         function showLoading() {
             document.getElementById('loading').classList.add('show');
@@ -953,6 +985,34 @@
 
         // Don't auto-load stock on page load anymore
         // Only load when user clicks "View Stock Levels" button
+
+        // DATE AND TIME UPDATE
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Format time as HH:MM:SS
+            const timeString = now.toLocaleTimeString('en-GB', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            
+            // Format date as "Day, DD Month YYYY"
+            const dateString = now.toLocaleDateString('en-GB', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            
+            document.getElementById('currentTime').textContent = timeString;
+            document.getElementById('currentDate').textContent = dateString;
+        }
+
+        // Update time immediately and then every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
 
         // BOOK OUT FORM
         document.getElementById('bookOutForm').addEventListener('submit', async function(e) {
@@ -1108,4 +1168,3 @@
     </script>
 </body>
 </html>
-
