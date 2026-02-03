@@ -101,7 +101,6 @@
 
         .nav-btn.adjust {
             border-color: rgba(0, 123, 255, 0.6);
-            grid-column: 1 / -1;
         }
 
         .icon {
@@ -506,17 +505,11 @@
                     <span class="icon">⚙️</span>
                     <span>Adjust Stock Levels</span>
                 </button>
-            </div>
 
-            <!-- STOCK DISPLAY -->
-            <div class="stock-display">
-                <h2>📊 Current Stock Levels</h2>
-                <button class="refresh-btn" onclick="loadStockLevels()">🔄 Refresh Stock</button>
-                <div class="stock-grid" id="stockGrid">
-                    <p style="text-align: center; color: rgba(255,255,255,0.6); grid-column: 1/-1;">
-                        Loading stock levels...
-                    </p>
-                </div>
+                <button class="nav-btn" style="border-color: rgba(255, 193, 7, 0.6);" onclick="showPage('viewStockPage')">
+                    <span class="icon">📊</span>
+                    <span>View Stock<br>Levels</span>
+                </button>
             </div>
         </div>
 
@@ -620,17 +613,6 @@
                     </p>
                     <p style="font-size: 1.1em; color: white; opacity: 0.8;">
                         Truck: <span id="bookOutSuccessTruck"></span>
-                    </p>
-                </div>
-            </div>
-
-            <!-- STOCK DISPLAY -->
-            <div class="stock-display">
-                <h2>📊 Current Stock Levels</h2>
-                <button class="refresh-btn" onclick="loadStockLevels()">🔄 Refresh Stock</button>
-                <div class="stock-grid" id="stockGridBookOut">
-                    <p style="text-align: center; color: rgba(255,255,255,0.6); grid-column: 1/-1;">
-                        Loading stock levels...
                     </p>
                 </div>
             </div>
@@ -746,17 +728,6 @@
                     </p>
                 </div>
             </div>
-
-            <!-- STOCK DISPLAY -->
-            <div class="stock-display">
-                <h2>📊 Current Stock Levels</h2>
-                <button class="refresh-btn" onclick="loadStockLevels()">🔄 Refresh Stock</button>
-                <div class="stock-grid" id="stockGridBookIn">
-                    <p style="text-align: center; color: rgba(255,255,255,0.6); grid-column: 1/-1;">
-                        Loading stock levels...
-                    </p>
-                </div>
-            </div>
         </div>
 
         <!-- ADJUST STOCK PAGE -->
@@ -844,12 +815,21 @@
                     </p>
                 </div>
             </div>
+        </div>
 
-            <!-- STOCK DISPLAY -->
-            <div class="stock-display">
-                <h2>📊 Current Stock Levels</h2>
-                <button class="refresh-btn" onclick="loadStockLevels()">🔄 Refresh Stock</button>
-                <div class="stock-grid" id="stockGridAdjust">
+        <!-- VIEW STOCK PAGE -->
+        <div id="viewStockPage" class="page">
+            <button class="btn-back" onclick="showPage('navPage')">← Back to Menu</button>
+            
+            <div class="header">
+                <h1>📊 Current Stock Levels</h1>
+                <p class="subtitle">Real-time inventory overview</p>
+            </div>
+
+            <div class="form-card">
+                <button class="refresh-btn" onclick="loadStockLevels()" style="width: 100%; margin-bottom: 20px;">🔄 Refresh Stock Levels</button>
+                
+                <div class="stock-grid" id="stockGrid">
                     <p style="text-align: center; color: rgba(255,255,255,0.6); grid-column: 1/-1;">
                         Loading stock levels...
                     </p>
@@ -881,8 +861,10 @@
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             
-            // Load stock when showing a page
-            loadStockLevels();
+            // Load stock only when viewing stock page
+            if (pageId === 'viewStockPage') {
+                loadStockLevels();
+            }
         }
 
         // PASSWORD MODAL FUNCTIONS
@@ -917,14 +899,11 @@
 
         // STOCK LEVELS FUNCTIONS
         async function loadStockLevels() {
-            const grids = ['stockGrid', 'stockGridBookOut', 'stockGridBookIn', 'stockGridAdjust'];
+            const grid = document.getElementById('stockGrid');
             
-            grids.forEach(gridId => {
-                const grid = document.getElementById(gridId);
-                if (grid) {
-                    grid.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.6); grid-column: 1/-1;">Loading stock levels...</p>';
-                }
-            });
+            if (grid) {
+                grid.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.6); grid-column: 1/-1;">Loading stock levels...</p>';
+            }
 
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getstock');
@@ -933,26 +912,20 @@
                 if (data.success && data.stock) {
                     displayStockLevels(data.stock);
                 } else {
-                    grids.forEach(gridId => {
-                        const grid = document.getElementById(gridId);
-                        if (grid) {
-                            grid.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.6); grid-column: 1/-1;">Unable to load stock levels</p>';
-                        }
-                    });
+                    if (grid) {
+                        grid.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.6); grid-column: 1/-1;">Unable to load stock levels</p>';
+                    }
                 }
             } catch (error) {
                 console.error('Error loading stock:', error);
-                grids.forEach(gridId => {
-                    const grid = document.getElementById(gridId);
-                    if (grid) {
-                        grid.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.6); grid-column: 1/-1;">Error loading stock levels</p>';
-                    }
-                });
+                if (grid) {
+                    grid.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.6); grid-column: 1/-1;">Error loading stock levels</p>';
+                }
             }
         }
 
         function displayStockLevels(stockData) {
-            const grids = ['stockGrid', 'stockGridBookOut', 'stockGridBookIn', 'stockGridAdjust'];
+            const grid = document.getElementById('stockGrid');
             
             let html = '';
             for (const [wheelType, quantity] of Object.entries(stockData)) {
@@ -973,18 +946,13 @@
                 `;
             }
             
-            grids.forEach(gridId => {
-                const grid = document.getElementById(gridId);
-                if (grid) {
-                    grid.innerHTML = html;
-                }
-            });
+            if (grid) {
+                grid.innerHTML = html;
+            }
         }
 
-        // Load stock on page load
-        window.addEventListener('load', function() {
-            loadStockLevels();
-        });
+        // Don't auto-load stock on page load anymore
+        // Only load when user clicks "View Stock Levels" button
 
         // BOOK OUT FORM
         document.getElementById('bookOutForm').addEventListener('submit', async function(e) {
@@ -1029,7 +997,6 @@
                 setTimeout(() => {
                     document.getElementById('bookOutForm').reset();
                     document.getElementById('bookOutSuccess').classList.remove('show');
-                    loadStockLevels();
                     showPage('navPage');
                 }, 3000);
                 
@@ -1082,7 +1049,6 @@
                 setTimeout(() => {
                     document.getElementById('bookInForm').reset();
                     document.getElementById('bookInSuccess').classList.remove('show');
-                    loadStockLevels();
                     showPage('navPage');
                 }, 3000);
                 
@@ -1131,7 +1097,6 @@
                 setTimeout(() => {
                     document.getElementById('adjustForm').reset();
                     document.getElementById('adjustSuccess').classList.remove('show');
-                    loadStockLevels();
                     showPage('navPage');
                 }, 3000);
                 
